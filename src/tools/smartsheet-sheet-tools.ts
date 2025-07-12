@@ -6,12 +6,12 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
 
     server.tool(
       "get_sheet",
-      "Retrieves the current state of a sheet, including rows, columns, and cells",
+      "Retrieves the full details of a specific sheet, including its data, column definitions, and formatting. This is useful for getting a complete snapshot of a sheet's structure and content.",
       {
-        sheetId: z.string().describe("The ID of the sheet to retrieve"),
-        include: z.string().optional().describe("Comma-separated list of elements to include (e.g., 'format,formulas')"),
-        pageSize: z.number().optional().describe("Number of rows to return per page"),
-        page: z.number().optional().describe("Page number to return"),
+        sheetId: z.string().describe("The unique identifier (ID) for the sheet you want to retrieve. Example: '8239427627331460'"),
+        include: z.string().optional().describe("A comma-separated list of optional elements to include in the response for more detailed information. Valid values: attachments, columnType, crossSheetReferences, discussions, filters, format, formulas, gannett, objectValue, ownerInfo, projectSettings, rowPermalink, rowWriterInfo, source, summary. For example, to get formatting and formulas, use: 'format,formulas'"),
+        pageSize: z.number().optional().describe("The number of rows to return in a single request (for pagination). Default is 100."),
+        page: z.number().optional().describe("The page number to retrieve when paginating through rows. Default is 1."),
       },
       async ({ sheetId, include, pageSize, page }) => {
         try {
@@ -43,12 +43,12 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
 
     server.tool(
       "get_sheet_by_url",
-      "Retrieves the current state of a sheet, including rows, columns, and cells",
+      "Gets a sheet by its URL, including its data, columns, and formatting. This is useful when you have the URL of a sheet but not its ID.",
       {
-        url: z.string().describe("The URL of the sheet to retrieve"),
-        include: z.string().optional().describe("Comma-separated list of elements to include (e.g., 'format,formulas')"),
-        pageSize: z.number().optional().describe("Number of rows to return per page"),
-        page: z.number().optional().describe("Page number to return"),
+        url: z.string().describe("The URL of the sheet to retrieve."),
+        include: z.string().optional().describe("A comma-separated list of optional elements to include in the response. Valid values: attachments, columnType, crossSheetReferences, discussions, filters, format, formulas, gannett, objectValue, ownerInfo, projectSettings, rowPermalink, rowWriterInfo, source, summary. Default is an empty string (no extra elements). Example: 'format,formulas'"),
+        pageSize: z.number().optional().describe("The number of rows to return per page. Default is 100."),
+        page: z.number().optional().describe("The page number to return. Default is 1."),
       },
       async ({ url, include, pageSize, page }) => {
         try {
@@ -93,9 +93,9 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
 
     server.tool(
         "get_sheet_version",
-        "Gets the current version number of a sheet",
+        "Gets the version number of the specified sheet. Each time a sheet is updated, its version number is incremented.",
         {
-          sheetId: z.string().describe("The ID of the sheet"),
+          sheetId: z.string().describe("The ID of the sheet."),
         },
         async ({ sheetId }) => {
           try {
@@ -125,17 +125,16 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
       
-      // Tool: Get Cell History
       server.tool(
         "get_cell_history",
-        "Retrieves the history of changes for a specific cell",
+        "Retrieves the history of changes for a specific cell in a sheet, showing how its value has changed over time.",
         {
-          sheetId: z.string().describe("The ID of the sheet"),
-          rowId: z.string().describe("The ID of the row"),
-          columnId: z.string().describe("The ID of the column"),
-          include: z.string().optional().describe("Optional parameter to include additional information"),
-          pageSize: z.number().optional().describe("Number of history entries to return per page"),
-          page: z.number().optional().describe("Page number to return"),
+          sheetId: z.string().describe("The ID of the sheet containing the cell."),
+          rowId: z.string().describe("The ID of the row containing the cell."),
+          columnId: z.string().describe("The ID of the column for the cell."),
+          include: z.string().optional().describe("A comma-separated list of optional elements to include in the response. Valid values: 'objectValue'. Default is an empty string."),
+          pageSize: z.number().optional().describe("The number of history items to return per page. Default is 100."),
+          page: z.number().optional().describe("The page number to return. Default is 1."),
         },
         async ({ sheetId, rowId, columnId, include, pageSize, page }) => {
           try {
@@ -165,14 +164,13 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
 
-      // Tool: Get Row
       server.tool(
         "get_row",
-        "Retrieves a specific row from a sheet",
+        "Gets the details of a specific row within a sheet.",
         {
-          sheetId: z.string().describe("The ID of the sheet"),
-          rowId: z.string().describe("The ID of the row"),
-          include: z.string().optional().describe("Comma-separated list of elements to include (e.g., 'format,formulas')"),
+          sheetId: z.string().describe("The ID of the sheet containing the row."),
+          rowId: z.string().describe("The ID of the row to retrieve."),
+          include: z.string().optional().describe("A comma-separated list of optional elements to include in the response. Valid values: 'columns,discussions,attachments,columnType,format,objectValue'. Default is an empty string."),
         },
         async ({ sheetId, rowId, include }) => {
           try {
@@ -202,25 +200,24 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
       
-      // Tool: Update Rows
       server.tool(
         "update_rows",
-        "Updates rows in a sheet, including cell values, formatting, and formulae",
+        "Updates specific cells within one or more existing rows in a sheet. This tool can be used to change values, apply formulas, or adjust formatting for multiple cells at once.",
         {
-          sheetId: z.string().describe("The ID of the sheet"),
+          sheetId: z.string().describe("The ID of the sheet containing the rows to update."),
           rows: z.array(
             z.object({
-              id: z.string().describe("Row ID"),
+              id: z.string().describe("The unique identifier (ID) of the row to update."),
               cells: z.array(
                 z.object({
-                  columnId: z.number().or(z.string()).describe("Column ID"),
-                  value: z.any().optional().describe("Cell value"),
-                  formula: z.string().optional().describe("Cell formula"),
-                  format: z.string().optional().describe("Cell format"),
+                  columnId: z.number().or(z.string()).describe("The ID of the column for the cell you want to update."),
+                  value: z.any().optional().describe("The new value for the cell. Can be a string, number, or boolean."),
+                  formula: z.string().optional().describe("A formula to set for the cell. Example: '=SUM([ColumnA]1:[ColumnB]1)'"),
+                  format: z.string().optional().describe("A format descriptor to apply to the cell. See Smartsheet API documentation for details."),
                 })
-              ).describe("Array of cell objects"),
+              ).describe("An array of cell objects within the row to update."),
             })
-          ).describe("Array of row objects to update"),
+          ).describe("An array of row objects to update. Each object must contain the `id` of the row and an array of `cells` to be modified."),
         },
         async ({ sheetId, rows }) => {
           try {
@@ -250,26 +247,25 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
       
-      // Tool: Add Rows
       server.tool(
         "add_rows",
-        "Adds new rows to a sheet",
+        "Adds one or more new rows to a sheet. Rows can be added to the top or bottom of the sheet.",
         {
-          sheetId: z.string().describe("The ID of the sheet"),
+          sheetId: z.string().describe("The ID of the sheet to add rows to."),
           rows: z.array(
             z.object({
-              toTop: z.boolean().optional().describe("Add row to the top of the sheet"),
-              toBottom: z.boolean().optional().describe("Add row to the bottom of the sheet"),
+              toTop: z.boolean().optional().describe("If true, the row will be inserted at the top of the sheet. Default is false (appended to the bottom). Overrides toBottom."),
+              toBottom: z.boolean().optional().describe("If true, the row will be appended to the bottom of the sheet. Default is true."),
               cells: z.array(
                 z.object({
-                  columnId: z.number().or(z.string()).describe("Column ID"),
-                  value: z.any().optional().describe("Cell value"),
-                  formula: z.string().optional().describe("Cell formula"),
-                  format: z.string().optional().describe("Cell format"),
+                  columnId: z.number().or(z.string()).describe("The ID of the column to add data to."),
+                  value: z.any().optional().describe("The value to set in the cell. Can be a string, number, or boolean."),
+                  formula: z.string().optional().describe("The formula to set in the cell."),
+                  format: z.string().optional().describe("The format to apply to the cell."),
                 })
-              ).describe("Array of cell objects"),
+              ).describe("An array of cell objects containing the data for the new row."),
             })
-          ).describe("Array of row objects to add"),
+          ).describe("An array of row objects to add to the sheet."),
         },
         async ({ sheetId, rows }) => {
           try {
@@ -299,15 +295,14 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
       
-      // Tool: Delete Rows (conditionally registered)
       if (allowDeleteTools) {
         server.tool(
           "delete_rows",
-          "Deletes rows from a sheet",
+          "Deletes one or more rows from a sheet permanently. This action cannot be undone.",
           {
-            sheetId: z.string().describe("The ID of the sheet"),
-            rowIds: z.array(z.string()).describe("Array of row IDs to delete"),
-            ignoreRowsNotFound: z.boolean().optional().describe("If true, don't throw an error if rows are not found"),
+            sheetId: z.string().describe("The ID of the sheet from which to delete rows."),
+            rowIds: z.array(z.string()).describe("An array of row IDs to be deleted."),
+            ignoreRowsNotFound: z.boolean().optional().describe("If true, the request will not fail if any of the specified row IDs are not found. Default is false."),
           },
           async ({ sheetId, rowIds, ignoreRowsNotFound }) => {
             try {
@@ -340,12 +335,11 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         console.warn("Delete operations are disabled. Set ALLOW_DELETE_TOOLS=true to enable them.");
       }
       
-      // Tool: Get Sheet Location
       server.tool(
         "get_sheet_location",
-        "Gets the folder ID where a sheet is located",
+        "Finds the ID of the folder or workspace that contains a specific sheet.",
         {
-          sheetId: z.string().describe("The ID of the sheet"),
+          sheetId: z.string().describe("The ID of the sheet to locate."),
         },
         async ({ sheetId }) => {
           try {
@@ -375,20 +369,18 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
       
-      // Tool: Copy Sheet
       server.tool(
         "copy_sheet",
-        "Creates a copy of the specified sheet in the same folder",
+        "Creates a copy of a sheet, including its data and formatting. The new sheet can be placed in any folder.",
         {
-          sheetId: z.string().describe("The ID of the sheet to copy"),
-          destinationName: z.string().describe("Name for the sheet copy"),
-          destinationFolderId: z.string().optional().describe("ID of the destination folder (same as source if not specified)"),
+          sheetId: z.string().describe("The ID of the sheet to copy."),
+          destinationName: z.string().describe("The name for the new, copied sheet."),
+          destinationFolderId: z.string().optional().describe("The ID of the folder where the new sheet will be created. If not specified, it's copied to the same folder as the original."),
         },
         async ({ sheetId, destinationName, destinationFolderId }) => {
           try {
             console.info(`Copying sheet ${sheetId} to "${destinationName}"`);
             
-            // If no destination folder is specified, get the current folder
             if (!destinationFolderId) {
               try {
                 const location = await api.sheets.getSheetLocation(sheetId);
@@ -423,20 +415,19 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
         }
       );
       
-      // Tool: Create Sheet
       server.tool(
         "create_sheet",
-        "Creates a new sheet",
+        "Creates a new, empty sheet with specified columns in a designated folder or workspace.",
         {
-          name: z.string().describe("Name for the new sheet"),
+          name: z.string().describe("The name of the new sheet to be created."),
           columns: z.array(
             z.object({
-              title: z.string().describe("Column title"),
-              type: z.string().describe("Column type"),
-              primary: z.boolean().optional().describe("Whether this is the primary column"),
+              title: z.string().describe("The title for the column."),
+              type: z.string().describe("The type of the column. Valid types: TEXT_NUMBER, DATE, DATETIME, CHECKBOX, CONTACT_LIST, PICKLIST, DURATION, PREDECESSOR."),
+              primary: z.boolean().optional().describe("If true, this column will be the primary column for the sheet. Only one primary column is allowed per sheet."),
             })
-          ).describe("Array of column objects"),
-          folderId: z.string().optional().describe("ID of the folder where the sheet should be created"),
+          ).describe("An array of column objects that defines the sheet's structure."),
+          folderId: z.string().optional().describe("The ID of the folder to create the sheet in. If not specified, the sheet is created in the user's default 'Sheets' folder."),
         },
         async ({ name, columns, folderId }) => {
           try {

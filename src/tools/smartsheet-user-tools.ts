@@ -4,10 +4,9 @@ import { z } from "zod";
 
 export function getUserTools(server: McpServer, api: SmartsheetAPI) {
 
-    // Tool: Get Current User
     server.tool(
         "get_current_user",
-        "Gets the current user's information",
+        "Retrieves the profile information for the user who is currently authenticated and using the tool.",
         async () => {
         try {
             console.info("Getting current user");
@@ -36,12 +35,11 @@ export function getUserTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
 
-    // Tool: Get User
     server.tool(
         "get_user",
-        "Gets a user's information by ID",
+        "Retrieves the profile information for a specific user, identified by their user ID.",
         {
-        userId: z.string().describe("ID of the user to get")
+        userId: z.string().describe("The unique identifier (ID) of the user to retrieve.")
         },
         async ({ userId }) => {
         try {
@@ -73,7 +71,7 @@ export function getUserTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "list_users",
-        "Lists all users",
+        "Retrieves a list of all users in the Smartsheet organization, including their profile information.",
         async () => {
             try {
                 console.info("Listing all users");

@@ -4,12 +4,11 @@ import { z } from "zod";
 
 export function getFolderTools(server: McpServer, api: SmartsheetAPI) {
 
-    // Tool: Get Folder
     server.tool(
         "get_folder",
-        "Retrieves the current state of a folder, including its contents which can be sheets, reports, or other folders",
+        "Retrieves the specified folder, including its contents such as sheets, reports, and sub-folders.",
         {
-        folderId: z.string().describe("The ID of the folder to retrieve")
+        folderId: z.string().describe("The unique identifier (ID) of the folder to retrieve.")
         },
         async ({ folderId}) => {
         try {
@@ -39,13 +38,12 @@ export function getFolderTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
 
-    // Tool: Create Folder in folder
     server.tool(
         "create_folder",
-        "Creates a new folder in a folder",
+        "Creates a new, empty folder within a specified parent folder. This is for creating sub-folders.",
         {
-        folderId: z.string().describe("The ID of the folder to create the folder in"),
-        folderName: z.string().describe("The name of the new folder")
+        folderId: z.string().describe("The ID of the parent folder where the new folder will be created."),
+        folderName: z.string().describe("The name of the new folder to be created.")
         },
         async ({ folderId, folderName }) => {
         try {
@@ -75,13 +73,12 @@ export function getFolderTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
 
-    // Tool: Create Folder in workspace
     server.tool(
         "create_workspace_folder",
-        "Creates a new folder in a workspace",
+        "Creates a new, empty folder at the top level of a specified workspace.",
         {
-        workspaceId: z.string().describe("The ID of the workspace to create the folder in"),
-        folderName: z.string().describe("The name of the new folder")
+        workspaceId: z.string().describe("The ID of the workspace where the new folder will be created."),
+        folderName: z.string().describe("The name of the new folder to be created.")
         },
         async ({ workspaceId, folderName }) => {
         try {

@@ -4,10 +4,9 @@ import { z } from "zod";
 
 export function getWorkspaceTools(server: McpServer, api: SmartsheetAPI) {
 
-    // Tool: Get Workspaces
     server.tool(
         "get_workspaces",
-        "Retrieves my Workspaces",
+        "Retrieves a list of all workspaces that the current user has access to.",
         {},
         async ({ }) => {
           try {
@@ -37,12 +36,11 @@ export function getWorkspaceTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
     
-    // Tool: Get Workspace
     server.tool(
         "get_workspace",
-        "Retrieves the current state of a Workspace, including its contents which can be sheets, reports, or other folders",
+        "Retrieves a specific workspace, including its contents like sheets, reports, dashboards, and folders.",
         {
-          workspaceId: z.string().describe("The ID of the workspace to retrieve")
+          workspaceId: z.string().describe("The unique identifier (ID) of the workspace to retrieve.")
         },
         async ({ workspaceId}) => {
           try {
@@ -72,12 +70,11 @@ export function getWorkspaceTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
     
-    // Tool: Create workspace
     server.tool(
         "create_workspace",
-        "Creates a new workspace",
+        "Creates a new, empty workspace with the specified name.",
         {
-          workspaceName: z.string().describe("The name of the new workspace")
+          workspaceName: z.string().describe("The name for the new workspace to be created.")
         },
         async ({ workspaceName }) => {
           try {

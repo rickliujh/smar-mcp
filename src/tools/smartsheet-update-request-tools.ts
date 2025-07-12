@@ -4,24 +4,23 @@ import { z } from "zod";
 
 export function getUpdateRequestTools(server: McpServer, api: SmartsheetAPI) {
 
-    // Tool: Create Update Request
     server.tool(
       "create_update_request",
-      "Creates an update request for a sheet",
+      "Sends an update request to one or more recipients for specified rows in a sheet. This prompts them to update cell values in the specified columns.",
       {
-        sheetId: z.string().describe("The ID of the sheet"),
-        rowIds: z.array(z.number()).optional().describe("Array of row IDs to include in the update request"),
-        columnIds: z.array(z.number()).optional().describe("Array of column IDs to include in the update request"),
-        includeAttachments: z.boolean().optional().describe("Whether to include attachments in the update request"),
-        includeDiscussions: z.boolean().optional().describe("Whether to include discussions in the update request"),
-        message: z.string().optional().describe("Message to include in the update request email"),
-        subject: z.string().optional().describe("Subject line for the update request email"),
-        ccMe: z.boolean().optional().describe("Whether to CC the sender on the update request email"),
+        sheetId: z.string().describe("The ID of the sheet containing the rows to be updated."),
+        rowIds: z.array(z.number()).optional().describe("An array of row IDs to include in the update request. If not specified, the request applies to all rows."),
+        columnIds: z.array(z.number()).optional().describe("An array of column IDs to be included for update. If not specified, all columns are included."),
+        includeAttachments: z.boolean().optional().describe("If true, attachments from the rows will be included in the update request. Default is false."),
+        includeDiscussions: z.boolean().optional().describe("If true, discussions from the rows will be included in the update request. Default is false."),
+        message: z.string().optional().describe("A custom message to be included in the body of the update request email."),
+        subject: z.string().optional().describe("The subject line for the update request email."),
+        ccMe: z.boolean().optional().describe("If true, a copy of the update request email will be sent to the current user. Default is false."),
         sendTo: z.array(
           z.object({
-            email: z.string().describe("Email address of the recipient")
+            email: z.string().describe("The email address of a recipient.")
           })
-        ).describe("Array of recipients for the update request"),
+        ).describe("An array of recipient objects, each with an email address."),
       },
       async ({ sheetId, rowIds, columnIds, includeAttachments, includeDiscussions, message, subject, ccMe, sendTo }) => {
         try {

@@ -4,16 +4,15 @@ import { z } from "zod";
 
 export function getDiscussionTools(server: McpServer, api: SmartsheetAPI) {
 
-    // Tool: Get discussions by sheet ID
     server.tool(
         "get_discussions_by_sheet_id",
-        "Gets discussions by sheet ID",
+        "Retrieves a list of all discussions associated with a specific sheet, including all comments and attachments.",
         {
-            sheetId: z.string().describe("The ID of the sheet"),
-            include: z.string().optional().describe("Optional parameter to include additional information (e.g., 'attachments')"),
-            pageSize: z.number().optional().describe("Number of discussions to return per page"),
-            page: z.number().optional().describe("Page number to return"),
-            includeAll: z.boolean().optional().describe("Whether to include all results"),
+            sheetId: z.string().describe("The unique identifier (ID) of the sheet from which to retrieve discussions."),
+            include: z.string().optional().describe("A comma-separated list of optional elements to include in the response. Valid values: 'attachments', 'comments'. Example: 'attachments,comments'"),
+            pageSize: z.number().optional().describe("The number of discussions to return per page. Default is 100."),
+            page: z.number().optional().describe("The page number to retrieve when paginating through discussions. Default is 1."),
+            includeAll: z.boolean().optional().describe("If true, automatically paginates through all results and returns them as a single list. Default is false."),
         },
         async ({ sheetId, include, pageSize, page, includeAll }) => {
             try {
@@ -43,17 +42,16 @@ export function getDiscussionTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
 
-    // Get discussions by row ID
     server.tool(
         "get_discussions_by_row_id",
-        "Gets discussions by row ID",
+        "Retrieves a list of all discussions associated with a specific row within a sheet.",
         {
-            sheetId: z.string().describe("ID of the sheet to get discussions for"),
-            rowId: z.string().describe("ID of the row to get discussions for"),
-            include: z.string().optional().describe("Optional parameter to include additional information (e.g., 'attachments')"),
-            pageSize: z.number().optional().describe("Number of discussions to return per page"),
-            page: z.number().optional().describe("Page number to return"),
-            includeAll: z.boolean().optional().describe("Whether to include all results"),
+            sheetId: z.string().describe("The ID of the sheet containing the row."),
+            rowId: z.string().describe("The ID of the row from which to retrieve discussions."),
+            include: z.string().optional().describe("A comma-separated list of optional elements to include in the response. Valid values: 'attachments', 'comments'. Example: 'attachments,comments'"),
+            pageSize: z.number().optional().describe("The number of discussions to return per page. Default is 100."),
+            page: z.number().optional().describe("The page number to retrieve. Default is 1."),
+            includeAll: z.boolean().optional().describe("If true, automatically paginates through all results. Default is false."),
         },
         async ({ sheetId, rowId, include, pageSize, page, includeAll }) => {
             try {
@@ -83,13 +81,12 @@ export function getDiscussionTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
 
-    // Create sheet discussion
     server.tool(
         "create_sheet_discussion",
-        "Creates a new discussion on a sheet",
+        "Creates a new discussion at the sheet level. This is useful for general comments about the entire sheet.",
         {
-            sheetId: z.string().describe("ID of the sheet to create a discussion for"),
-            commentText: z.string().describe("Text of the comment to add")
+            sheetId: z.string().describe("The ID of the sheet where the discussion will be created."),
+            commentText: z.string().describe("The text of the initial comment for the new discussion.")
         },
         async ({ sheetId, commentText }) => {
             try {
@@ -119,14 +116,13 @@ export function getDiscussionTools(server: McpServer, api: SmartsheetAPI) {
         }
     );
 
-    // Create row discussion
     server.tool(
         "create_row_discussion",
-        "Creates a new discussion on a row",
+        "Creates a new discussion on a specific row within a sheet. This is for comments that are specific to a particular row's data.",
         {
-            sheetId: z.string().describe("ID of the sheet to create a discussion for"),
-            rowId: z.string().describe("ID of the row to create a discussion for"),
-            commentText: z.string().describe("Text of the comment to add")
+            sheetId: z.string().describe("The ID of the sheet containing the row."),
+            rowId: z.string().describe("The ID of the row where the discussion will be created."),
+            commentText: z.string().describe("The text of the initial comment for the new discussion.")
         },
         async ({ sheetId, rowId, commentText }) => {
             try {

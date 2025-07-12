@@ -6,9 +6,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_sheets",
-        "Search for sheets by name, cell data, or summary fields",
+        "Searches all sheets the user can access for a specific query. The search includes sheet names, cell data, and summary fields.",
         {
-        query: z.string().describe("Text to search for in sheet names, cell data, or summary fields"),
+        query: z.string().describe("The text to search for. Example: 'Q3 Financials' or 'contact@example.com'"),
         },
         async ({ query }) => {
         try {
@@ -40,10 +40,10 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_in_sheet",
-        "Search cell data and summary fields for a specific sheet",
+        "Performs a text search within a specific sheet, looking for matches in cell data and summary fields.",
         {
-            sheetId: z.string().describe("The ID of the sheet to retrieve"),
-            query: z.string().describe("Text to search for in sheet names, cell data, or summary fields"),
+            sheetId: z.string().describe("The ID of the sheet to search within."),
+            query: z.string().describe("The text to search for within the sheet."),
         },
         async ({ sheetId, query }) => {
         try {
@@ -75,10 +75,10 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_in_sheet_by_url",
-        "Search cell data and summary fields for a specific sheet by URL",
+        "Performs a text search within a specific sheet, identified by its URL.",
         {
-            url: z.string().describe("The URL of the sheet to retrieve"),
-            query: z.string().describe("Text to search for in sheet names, cell data, or summary fields"),
+            url: z.string().describe("The URL of the sheet to search within."),
+            query: z.string().describe("The text to search for in the sheet's cell data and summary fields."),
         },
         async ({ url, query }) => {
         try {
@@ -124,9 +124,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "what_am_i_assigned_to_by_sheet_id",
-        "Search a sheet by ID to find assigned tasks",
+        "Searches a specific sheet by its ID to find all rows and tasks assigned to the current user (based on their email address).",
         {
-            sheetId: z.string().describe("The ID of the sheet to retrieve"),
+            sheetId: z.string().describe("The ID of the sheet to search for assigned tasks."),
         },
         async ({ sheetId }) => {
         try {
@@ -158,9 +158,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "what_am_i_assigned_to_by_sheet_url",
-        "Search a sheet by URL to find assigned tasks",
+        "Searches a specific sheet by its URL to find all rows and tasks assigned to the current user.",
         {
-            url: z.string().describe("The URL of the sheet to retrieve"),
+            url: z.string().describe("The URL of the sheet to search for assigned tasks."),
         },
         async ({ url }) => {
         try {
@@ -206,9 +206,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_folders",
-        "Search for folders by name",
+        "Searches all folders the user can access for a specific query.",
         {
-        query: z.string().describe("Text to search for in folder names"),
+        query: z.string().describe("The text to search for in folder names."),
         },
         async ({ query }) => {
         try {
@@ -240,9 +240,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_workspaces",
-        "Search for workspaces by name",
+        "Searches all workspaces the user can access for a specific query.",
         {
-        query: z.string().describe("Text to search for in workspace names"),
+        query: z.string().describe("The text to search for in workspace names."),
         },
         async ({ query }) => {
         try {
@@ -274,9 +274,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_reports",
-        "Search for reports by name",
+        "Searches all reports the user can access for a specific query.",
         {
-        query: z.string().describe("Text to search for in report names"),
+        query: z.string().describe("The text to search for in report names."),
         },
         async ({ query }) => {
         try {
@@ -308,9 +308,9 @@ export function getSearchTools(server: McpServer, api: SmartsheetAPI) {
 
     server.tool(
         "search_dashboards",
-        "Search for dashboards by name",
+        "Searches all dashboards (Sights) the user can access for a specific query.",
         {
-        query: z.string().describe("Text to search for in dashboard names"),
+        query: z.string().describe("The text to search for in dashboard names."),
         },
         async ({ query }) => {
         try {
