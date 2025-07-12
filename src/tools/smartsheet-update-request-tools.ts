@@ -9,8 +9,8 @@ export function getUpdateRequestTools(server: McpServer, api: SmartsheetAPI) {
       "Sends an update request to one or more recipients for specified rows in a sheet. This prompts them to update cell values in the specified columns.",
       {
         sheetId: z.string().describe("The ID of the sheet containing the rows to be updated."),
-        rowIds: z.array(z.number()).optional().describe("An array of row IDs to include in the update request. If not specified, the request applies to all rows."),
-        columnIds: z.array(z.number()).optional().describe("An array of column IDs to be included for update. If not specified, all columns are included."),
+        rowIds: z.array(z.number()).optional().describe("An JSON array object of row IDs to include in the update request. If not specified, the request applies to all rows."),
+        columnIds: z.array(z.number()).optional().describe("An JSON array object of column IDs to be included for update. If not specified, all columns are included."),
         includeAttachments: z.boolean().optional().describe("If true, attachments from the rows will be included in the update request. Default is false."),
         includeDiscussions: z.boolean().optional().describe("If true, discussions from the rows will be included in the update request. Default is false."),
         message: z.string().optional().describe("A custom message to be included in the body of the update request email."),
@@ -20,7 +20,7 @@ export function getUpdateRequestTools(server: McpServer, api: SmartsheetAPI) {
           z.object({
             email: z.string().describe("The email address of a recipient.")
           })
-        ).describe("An array of recipient objects, each with an email address."),
+        ).describe("An JSON array object of recipient objects, each with an email address."),
       },
       async ({ sheetId, rowIds, columnIds, includeAttachments, includeDiscussions, message, subject, ccMe, sendTo }) => {
         try {

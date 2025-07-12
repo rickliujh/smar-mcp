@@ -215,9 +215,9 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
                   formula: z.string().optional().describe("A formula to set for the cell. Example: '=SUM([ColumnA]1:[ColumnB]1)'"),
                   format: z.string().optional().describe("A format descriptor to apply to the cell. See Smartsheet API documentation for details."),
                 })
-              ).describe("An array of cell objects within the row to update."),
+              ).describe("An JSON array object of cell objects within the row to update."),
             })
-          ).describe("An array of row objects to update. Each object must contain the `id` of the row and an array of `cells` to be modified."),
+          ).describe("An JSON array object of row objects to update. Each object must contain the `id` of the row and an array of `cells` to be modified."),
         },
         async ({ sheetId, rows }) => {
           try {
@@ -263,9 +263,9 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
                   formula: z.string().optional().describe("The formula to set in the cell."),
                   format: z.string().optional().describe("The format to apply to the cell."),
                 })
-              ).describe("An array of cell objects containing the data for the new row."),
+              ).describe("An JSON array object of cell objects containing the data for the new row."),
             })
-          ).describe("An array of row objects to add to the sheet."),
+          ).describe("An JSON array object of row objects to add to the sheet."),
         },
         async ({ sheetId, rows }) => {
           try {
@@ -301,7 +301,7 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
           "Deletes one or more rows from a sheet permanently. This action cannot be undone.",
           {
             sheetId: z.string().describe("The ID of the sheet from which to delete rows."),
-            rowIds: z.array(z.string()).describe("An array of row IDs to be deleted."),
+            rowIds: z.array(z.string()).describe("An JSON array of row IDs to be deleted."),
             ignoreRowsNotFound: z.boolean().optional().describe("If true, the request will not fail if any of the specified row IDs are not found. Default is false."),
           },
           async ({ sheetId, rowIds, ignoreRowsNotFound }) => {
@@ -426,7 +426,7 @@ export function getSheetTools(server: McpServer, api: SmartsheetAPI, allowDelete
               type: z.string().describe("The type of the column. Valid types: TEXT_NUMBER, DATE, DATETIME, CHECKBOX, CONTACT_LIST, PICKLIST, DURATION, PREDECESSOR."),
               primary: z.boolean().optional().describe("If true, this column will be the primary column for the sheet. Only one primary column is allowed per sheet."),
             })
-          ).describe("An array of column objects that defines the sheet's structure."),
+          ).describe("An JSON array object of column objects that defines the sheet's structure."),
           folderId: z.string().optional().describe("The ID of the folder to create the sheet in. If not specified, the sheet is created in the user's default 'Sheets' folder."),
         },
         async ({ name, columns, folderId }) => {
